@@ -4,7 +4,8 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "railway-build": "composer install --ignore-platform-req=ext-gd && npm install && npm run build"
     },
     "devDependencies": {
         "@popperjs/core": "^2.11.6",
