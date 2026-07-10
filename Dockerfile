@@ -8,7 +8,11 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
-    && docker-php-ext-install zip pdo pdo_mysql
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd zip pdo pdo_mysql
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -16,8 +20,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy project files
 COPY . .
 
-# Install PHP dependencies (ignore ext-gd)
-RUN composer install --ignore-platform-req=ext-gd --no-interaction --optimize-autoloader
+# Install PHP dependencies (ignore platform requirements)
+RUN composer install --ignore-platform-reqs --no-interaction --optimize-autoloader
 
 # Generate key
 RUN php artisan key:generate
